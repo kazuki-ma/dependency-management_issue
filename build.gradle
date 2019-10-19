@@ -1,0 +1,52 @@
+buildscript {
+    ext {
+        REPOS = {
+            mavenCentral()
+            maven { url 'https://plugins.gradle.org/m2/' }
+            maven { url 'http://repo.spring.io/plugins-release' }
+            mavenLocal()
+        }
+    }
+
+    repositories REPOS
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
+        classpath 'io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+dependencies {
+    compile 'io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE'
+}
+
+allprojects {
+    repositories REPOS
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'project-report'
+
+    dependencies {
+        implementation 'org.glassfish.jersey.core:jersey-common:2.13'
+    }
+
+    dependencyReport {
+        outputFile = project.file('dependencies.txt')
+    }
+}
+
+project(':plugin_with') {
+    apply plugin: 'io.spring.dependency-management'
+ }
